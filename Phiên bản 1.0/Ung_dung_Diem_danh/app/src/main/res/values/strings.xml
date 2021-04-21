@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Ung_dung_Diem_danh</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="signuphere">SignUp Here</string>
+    <string name="login">Login</string>
+    <string name="signup">SignUp</string>
+    <string name="fullname">Fullname</string>
+    <string name="email">Email</string>
+    <string name="login_here">Already have an account? Sign in</string>
+    <string name="create_account">Create your account</string>
+    <string name="welcome">Welcome</string>
+    <string name="student">Student</string>
+    <string name="teacher">Teacher</string>
+    <string name="admin">Admin</string>
+</resources>
