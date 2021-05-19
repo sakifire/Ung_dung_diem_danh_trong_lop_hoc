@@ -1,0 +1,1 @@
+Khắc phục một số lỗi về giao diện và SQLite của phiên bản trước
