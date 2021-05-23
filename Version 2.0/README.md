@@ -6,3 +6,4 @@ Cac chuc nang moi:
     4. Thay doi ngay thang diem danh va cap nhat moi trang thai diem danh theo mon hoc
     5. Luu trang thai diem danh
     6. Xem danh sach diem danh duoi dang bang(table)
+Link Video demo version 2.0: https://youtu.be/DTYx7aR5ZD8
