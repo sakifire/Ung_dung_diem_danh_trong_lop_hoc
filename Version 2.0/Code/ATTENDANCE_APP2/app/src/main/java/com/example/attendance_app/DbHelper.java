@@ -12,6 +12,23 @@ import androidx.annotation.Nullable;
 public class DbHelper extends SQLiteOpenHelper {
     private static final int VERSION = 2;
 
+    //User table
+    private static final String USER_TABLE_NAME = "USER_TABLE_NAME";
+    public static final String U_ID = "_UID";
+    public static final String USER_NAME = "USER_NAME";
+    public static final String PASSWORD = "PASSWORD";
+
+    private static final String CREATE_USER_TABLE =
+            "CREATE TABLE " + USER_TABLE_NAME + "("
+                    + U_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                    + USER_NAME + " TEXT NOT NULL, "
+                    + PASSWORD + " TEXT NOT NULL, "
+                    + "UNIQUE (" + U_ID + "," + USER_NAME + ")" + ");";
+
+    private static final String DROP_USER_TABLE = "DROP TABLE IF EXISTS " + USER_TABLE_NAME;
+    private static final String SELECT_USER_TABLE = "SELECT * FROM " + USER_TABLE_NAME;
+
+
     //CLass table
     private static final String CLASS_TABLE_NAME = "CLASS_TABLE";
     public static final String C_ID = "_CID";
@@ -81,6 +98,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CLASS_TABLE);
         db.execSQL(CREATE_STUDENT_TABLE);
         db.execSQL(CREATE_STATUS_TABLE);
+        db.execSQL(CREATE_USER_TABLE);
     }
 
     @Override
@@ -89,10 +107,55 @@ public class DbHelper extends SQLiteOpenHelper {
             db.execSQL(DROP_CLASS_TABLE);
             db.execSQL(DROP_STUDENT_TABLE);
             db.execSQL(DROP_STATUS_TABLE);
+            db.execSQL(CREATE_USER_TABLE);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    //User
+    public Boolean insertData(String username, String password) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("username", username);
+        contentValues.put("password", password);
+        long result = MyDB.insert("users", null, contentValues);
+        if (result == -1) return false;
+        else
+            return true;
+    }
+
+    Boolean addUser(String username, String password) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_NAME, username);
+        values.put(PASSWORD, password);
+        long result = database.insert(USER_TABLE_NAME, null, values);
+        if (result == -1) return false;
+        else
+            return true;
+
+    }
+
+    public Boolean checkUserName(String username) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME + " = ? ", new String[]{username});
+        if (cursor.getCount() > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public Boolean checkUserNamePassword(String username, String password) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
+                " = ? AND " + PASSWORD + " = ?", new String[]{username, password});
+        if (cursor.getCount() > 0)
+            return true;
+        else
+            return false;
+    }
+
 
     //Class
     long addClass(String className, String subjectName) {

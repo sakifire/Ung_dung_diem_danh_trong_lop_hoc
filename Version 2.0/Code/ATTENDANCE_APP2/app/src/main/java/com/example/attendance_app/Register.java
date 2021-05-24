@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Register extends AppCompatActivity {
     EditText username, password, repassword;
     Button signup, signin;
-    UserAdapter DB;
+    DbHelper DB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class Register extends AppCompatActivity {
         repassword = (EditText) findViewById(R.id.repassword);
         signup = (Button) findViewById(R.id.btnsignup);
         signin = (Button) findViewById(R.id.btnsignin);
-        DB = new UserAdapter(this);
+        DB = new DbHelper(this);
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -35,9 +35,9 @@ public class Register extends AppCompatActivity {
                     Toast.makeText(Register.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 else{
                     if(pass.equals(repass)){
-                        Boolean checkuser = DB.checkusername(user);
+                        Boolean checkuser = DB.checkUserName(user);
                         if(checkuser==false){
-                            Boolean insert = DB.insertData(user, pass);
+                            Boolean insert = DB.addUser(user, pass);
                             if(insert==true){
                                 Toast.makeText(Register.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(),Login.class);

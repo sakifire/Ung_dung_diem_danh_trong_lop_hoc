@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +36,7 @@ public class MyDialog extends DialogFragment {
 
     }
 
-    public  interface OnClickListener{
+    public interface OnClickListener {
         void OnClick(String text1, String text2);
     }
 
@@ -47,10 +48,10 @@ public class MyDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = null;
-        if (getTag().equals(CLASS_ADD_DIALOG))dialog=getAddClassDialog();
-        if (getTag().equals(STUDENT_ADD_DIALOG))dialog=getAddStudentDialog();
-        if (getTag().equals(CLASS_UPDATE_DIALOG))dialog=getUpdateClassDialog();
-        if (getTag().equals(STUDENT_UPDATE_DIALOG))dialog=getUpdateStudentDialog();
+        if (getTag().equals(CLASS_ADD_DIALOG)) dialog = getAddClassDialog();
+        if (getTag().equals(STUDENT_ADD_DIALOG)) dialog = getAddStudentDialog();
+        if (getTag().equals(CLASS_UPDATE_DIALOG)) dialog = getUpdateClassDialog();
+        if (getTag().equals(STUDENT_UPDATE_DIALOG)) dialog = getUpdateStudentDialog();
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return dialog;
@@ -83,8 +84,11 @@ public class MyDialog extends DialogFragment {
         add.setOnClickListener(v -> {
             String roll = roll_edt.getText().toString();
             String name = name_edt.getText().toString();
-
-            listener.OnClick(roll,name);
+            listener.OnClick(roll, name);
+            if (roll == null || roll == "" || name == null || name == "") {
+                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+                return;
+            }
             dismiss();
         });
         return builder.create();
@@ -113,7 +117,11 @@ public class MyDialog extends DialogFragment {
         add.setOnClickListener(v -> {
             String className = class_edt.getText().toString();
             String subName = subject_edt.getText().toString();
-            listener.OnClick(className,subName);
+            if (className == null || subName == null || className == "" || subName == "") {
+                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            listener.OnClick(className, subName);
             dismiss();
         });
         return builder.create();
@@ -142,9 +150,13 @@ public class MyDialog extends DialogFragment {
         add.setOnClickListener(v -> {
             String roll = roll_edt.getText().toString();
             String name = name_edt.getText().toString();
-            roll_edt.setText(String.valueOf(Integer.parseInt(roll)+1));
+            if (roll == null || name == null || name == "") {
+                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            roll_edt.setText(String.valueOf(Integer.parseInt(roll) + 1));
             name_edt.setText("");
-            listener.OnClick(roll,name);
+            listener.OnClick(roll, name);
         });
         return builder.create();
     }
@@ -171,8 +183,13 @@ public class MyDialog extends DialogFragment {
         add.setOnClickListener(v -> {
             String className = class_edt.getText().toString();
             String subName = subject_edt.getText().toString();
-            listener.OnClick(className,subName);
-            dismiss();
+            if (className.length() == 0|| subName.length()==0) {
+                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                listener.OnClick(className, subName);
+                dismiss();
+            }
         });
         return builder.create();
     }

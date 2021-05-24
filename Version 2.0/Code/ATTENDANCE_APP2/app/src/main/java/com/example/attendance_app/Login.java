@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Login extends AppCompatActivity {
     EditText username, password;
     Button btnlogin;
-    UserAdapter DB;
+    DbHelper DB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +21,7 @@ public class Login extends AppCompatActivity {
         username = (EditText) findViewById(R.id.username1);
         password = (EditText) findViewById(R.id.password1);
         btnlogin = (Button) findViewById(R.id.btnsignin1);
-        DB = new UserAdapter(this);
+        DB = new DbHelper(this);
 
         btnlogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,7 +33,7 @@ public class Login extends AppCompatActivity {
                 if(user.equals("")||pass.equals(""))
                     Toast.makeText(Login.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 else{
-                    Boolean checkuserpass = DB.checkusernamepassword(user, pass);
+                    Boolean checkuserpass = DB.checkUserNamePassword(user, pass);
                     if(checkuserpass==true){
                         Toast.makeText(Login.this, "Sign in successfull", Toast.LENGTH_SHORT).show();
                         Intent intent  = new Intent(getApplicationContext(), MainActivity.class);
