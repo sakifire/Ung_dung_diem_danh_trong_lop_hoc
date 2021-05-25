@@ -61,6 +61,7 @@ public class StudentActivity extends AppCompatActivity {
 
     private void loadData() {
         Cursor cursor = dbHelper.getStudentTable(cid);
+
         studentItems.clear();
         while (cursor.moveToNext()) {
             long sid = cursor.getLong(cursor.getColumnIndex(DbHelper.S_ID));
@@ -204,4 +205,6 @@ public class StudentActivity extends AppCompatActivity {
         studentItems.remove(position);
         adapter.notifyItemRemoved(position);
     }
+
+
 }

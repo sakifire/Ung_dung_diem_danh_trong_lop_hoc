@@ -23,8 +23,6 @@ public class SheetListActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     private TextView subtitle;
-    private String className;
-    private String subjectName;
     private MyCalendar calendar;
 
     @Override
@@ -32,10 +30,12 @@ public class SheetListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sheet_list);
 
+        calendar = new MyCalendar();
+
         cid= getIntent().getLongExtra("cid",-1);
         Log.i("1234567890","onCreate: "+cid);
 
-        //setToolbar();
+        setToolbar();
         loadListItems();
         sheetList = findViewById(R.id.sheetList);
         adapter = new ArrayAdapter(this, R.layout.sheet_list, R.id.date_list_item, listItems);
@@ -74,11 +74,10 @@ public class SheetListActivity extends AppCompatActivity {
         ImageButton save = toolbar.findViewById(R.id.save);
         //save.setOnClickListener(v -> saveStatus());
 
-        //title.setText(className);
-        //subtitle.setText(subjectName + " | " + calendar.getDate());
+        title.setText("");
+        subtitle.setText("");
 
         back.setOnClickListener(v -> onBackPressed());
-        save.setVisibility(View.INVISIBLE);
         toolbar.inflateMenu(R.menu.student_menu);
         //toolbar.setOnMenuItemClickListener(menuItem -> onMenuItemClick(menuItem));
     }

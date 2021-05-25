@@ -85,8 +85,8 @@ public class MyDialog extends DialogFragment {
             String roll = roll_edt.getText().toString();
             String name = name_edt.getText().toString();
             listener.OnClick(roll, name);
-            if (roll == null || roll == "" || name == null || name == "") {
-                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+            if (roll.length()==0||name.length()==0) {
+                Toast.makeText(getActivity(), "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 return;
             }
             dismiss();
@@ -117,8 +117,8 @@ public class MyDialog extends DialogFragment {
         add.setOnClickListener(v -> {
             String className = class_edt.getText().toString();
             String subName = subject_edt.getText().toString();
-            if (className == null || subName == null || className == "" || subName == "") {
-                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+            if (className.length()==0 || subName.length() == 0) {
+                Toast.makeText(getActivity(), "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 return;
             }
             listener.OnClick(className, subName);
@@ -150,8 +150,12 @@ public class MyDialog extends DialogFragment {
         add.setOnClickListener(v -> {
             String roll = roll_edt.getText().toString();
             String name = name_edt.getText().toString();
-            if (roll == null || name == null || name == "") {
-                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+            if (roll.length() == 0 || name.length() == 0) {
+                Toast.makeText(getActivity(), "Please enter all the fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!isNumeric(roll)){
+                Toast.makeText(getActivity(), "Please renter the roll in int", Toast.LENGTH_SHORT).show();
                 return;
             }
             roll_edt.setText(String.valueOf(Integer.parseInt(roll) + 1));
@@ -183,8 +187,8 @@ public class MyDialog extends DialogFragment {
         add.setOnClickListener(v -> {
             String className = class_edt.getText().toString();
             String subName = subject_edt.getText().toString();
-            if (className.length() == 0|| subName.length()==0) {
-                Toast.makeText(getActivity(), "Please fill in the blank", Toast.LENGTH_SHORT).show();
+            if (className.length() == 0 || subName.length() == 0) {
+                Toast.makeText(getActivity(), "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 return;
             } else {
                 listener.OnClick(className, subName);
@@ -192,5 +196,9 @@ public class MyDialog extends DialogFragment {
             }
         });
         return builder.create();
+    }
+
+    public boolean isNumeric(String s) {
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
     }
 }

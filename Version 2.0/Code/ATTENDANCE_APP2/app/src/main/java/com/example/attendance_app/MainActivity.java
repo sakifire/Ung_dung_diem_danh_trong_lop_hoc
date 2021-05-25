@@ -27,12 +27,16 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     DbHelper dbHelper;
 
+    private long uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         dbHelper = new DbHelper(this);
+        Intent intent = getIntent();
+        uid = intent.getLongExtra("uid",-1);
 
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(v -> showDialog());
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        Cursor cursor = dbHelper.getClassTable();
+        Cursor cursor = dbHelper.getClassTable(uid);
 
         classItems.clear();
         while (cursor.moveToNext()) {
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addClass(String className, String subjectName) {
-        long cid = dbHelper.addClass(className,subjectName);
+        long cid = dbHelper.addClass(uid, className,subjectName);
         ClassItem classItem = new ClassItem(cid, className, subjectName);
         classItems.add(classItem);
         classAdapter.notifyDataSetChanged();
