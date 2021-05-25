@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DbHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     //User table
     private static final String USER_TABLE_NAME = "USER_TABLE_NAME";
@@ -23,7 +23,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     + U_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
                     + USER_NAME + " TEXT NOT NULL, "
                     + PASSWORD + " TEXT NOT NULL, "
-                    + "UNIQUE (" + U_ID + "," + USER_NAME + ")" + ");";
+                    + " UNIQUE (" + U_ID + "," + USER_NAME + ")" + ");";
 
     private static final String DROP_USER_TABLE = "DROP TABLE IF EXISTS " + USER_TABLE_NAME;
     private static final String SELECT_USER_TABLE = "SELECT * FROM " + USER_TABLE_NAME;
@@ -38,9 +38,12 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String CREATE_CLASS_TABLE =
             "CREATE TABLE " + CLASS_TABLE_NAME + "("
                     + C_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                    + U_ID + " INTEGER NOT NULL, "
                     + CLASS_NAME_KEY + " TEXT NOT NULL, "
                     + SUBJECT_NAME_KEY + " TEXT NOT NULL, "
-                    + "UNIQUE (" + CLASS_NAME_KEY + "," + SUBJECT_NAME_KEY + ")" + ");";
+                    + " UNIQUE (" + CLASS_NAME_KEY + "," + SUBJECT_NAME_KEY + "),"
+                    + " FOREIGN KEY ( " + U_ID + ") REFERENCES " + USER_TABLE_NAME + "( " + U_ID + ")" + ");";
+
 
     private static final String DROP_CLASS_TABLE = "DROP TABLE IF EXISTS " + CLASS_TABLE_NAME;
     private static final String SELECT_CLASS_TABLE = "SELECT * FROM " + CLASS_TABLE_NAME;
@@ -95,15 +98,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_CLASS_TABLE);
         db.execSQL(CREATE_STUDENT_TABLE);
         db.execSQL(CREATE_STATUS_TABLE);
-        db.execSQL(CREATE_USER_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         try {
+            db.execSQL(DROP_USER_TABLE);
             db.execSQL(DROP_CLASS_TABLE);
             db.execSQL(DROP_STUDENT_TABLE);
             db.execSQL(DROP_STATUS_TABLE);
@@ -137,6 +141,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
+    public int getUser(String username, String password){
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
+                " = ? AND " + PASSWORD + " = ?", new String[]{username, password});
+        return cursor.getColumnIndex(U_ID);
+    }
     public Boolean checkUserName(String username) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME + " = ? ", new String[]{username});
@@ -158,19 +168,20 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     //Class
-    long addClass(String className, String subjectName) {
+    long addClass(long uid, String className, String subjectName) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(U_ID,uid);
         values.put(CLASS_NAME_KEY, className);
         values.put(SUBJECT_NAME_KEY, subjectName);
 
         return database.insert(CLASS_TABLE_NAME, null, values);
     }
 
-    Cursor getClassTable() {
+    Cursor getClassTable(long uid) {
         SQLiteDatabase database = this.getReadableDatabase();
-
-        return database.rawQuery(SELECT_CLASS_TABLE, null);
+        return database.query(CLASS_TABLE_NAME,null,U_ID + "=?", new String[]{String.valueOf(uid)},null,null,null);
+        //return database.rawQuery(SELECT_CLASS_TABLE, null);
     }
 
     int deleteClass(long cid) {

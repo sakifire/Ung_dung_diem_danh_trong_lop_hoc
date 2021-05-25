@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Login extends AppCompatActivity {
     EditText username, password;
-    Button btnlogin;
+    Button btnLogin;
     DbHelper DB;
+    UserItem userItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,10 +22,10 @@ public class Login extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.username1);
         password = (EditText) findViewById(R.id.password1);
-        btnlogin = (Button) findViewById(R.id.btnsignin1);
+        btnLogin = (Button) findViewById(R.id.btnsignin1);
         DB = new DbHelper(this);
 
-        btnlogin.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -35,8 +37,12 @@ public class Login extends AppCompatActivity {
                 else{
                     Boolean checkuserpass = DB.checkUserNamePassword(user, pass);
                     if(checkuserpass==true){
-                        Toast.makeText(Login.this, "Sign in successfull", Toast.LENGTH_SHORT).show();
+                        int uid = DB.getUser(user,pass);
+                        Toast.makeText(Login.this, "Login successfully!", Toast.LENGTH_SHORT).show();
                         Intent intent  = new Intent(getApplicationContext(), MainActivity.class);
+
+                        intent.putExtra("uid", uid);
+
                         startActivity(intent);
                     }else{
                         Toast.makeText(Login.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
