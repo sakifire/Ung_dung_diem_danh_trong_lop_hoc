@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -46,7 +47,10 @@ public class DbHelper extends SQLiteOpenHelper {
                     + CLASS_NAME_KEY + " TEXT NOT NULL, "
                     + SUBJECT_NAME_KEY + " TEXT NOT NULL, "
                     + " UNIQUE (" + CLASS_NAME_KEY + "," + SUBJECT_NAME_KEY + "),"
-                    + " FOREIGN KEY ( " + U_ID + ") REFERENCES " + USER_TABLE_NAME + "( " + U_ID + ")" + ");";
+                    + " FOREIGN KEY ( " + U_ID + ") REFERENCES "
+                    + USER_TABLE_NAME
+                    + "( " + U_ID + ")"
+                    + ");";
 
 
     private static final String DROP_CLASS_TABLE = "DROP TABLE IF EXISTS " + CLASS_TABLE_NAME;
@@ -65,7 +69,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     + C_ID + " INTEGER NOT NULL, "
                     + STUDENT_NAME_KEY + " TEXT NOT NULL, "
                     + STUDENT_ROLL_KEY + " INTEGER, "
-                    + "FOREIGN KEY ( " + C_ID + ") REFERENCES "
+                    + " FOREIGN KEY ( " + C_ID + ") REFERENCES "
                     + CLASS_TABLE_NAME
                     + "(" + C_ID + ")"
                     + ");";
@@ -128,7 +132,7 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put("username", username);
         contentValues.put("password", password);
         contentValues.put("email", email);
-        contentValues.put("gender",gender);
+        contentValues.put("gender", gender);
         long result = MyDB.insert("users", null, contentValues);
         if (result == -1) return false;
         else
@@ -149,14 +153,18 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    public int getUser(String username, String password){
-        SQLiteDatabase MyDB = this.getWritableDatabase();
+
+    public int getUser(String username) {
+        SQLiteDatabase MyDB = this.getReadableDatabase();
         Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
-                " = ? AND " + PASSWORD + " = ?", new String[]{username, password});
-        return cursor.getColumnIndex(U_ID);
+                " = ? ", new String[]{username});
+        if (cursor.getCount() > 0)
+            cursor.moveToFirst();
+        return cursor.getInt(0);
     }
+
     public Boolean checkUserName(String username) {
-        SQLiteDatabase MyDB = this.getWritableDatabase();
+        SQLiteDatabase MyDB = this.getReadableDatabase();
         Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME + " = ? ", new String[]{username});
         if (cursor.getCount() > 0)
             return true;
@@ -165,7 +173,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public Boolean checkUserNamePassword(String username, String password) {
-        SQLiteDatabase MyDB = this.getWritableDatabase();
+        SQLiteDatabase MyDB = this.getReadableDatabase();
         Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
                 " = ? AND " + PASSWORD + " = ?", new String[]{username, password});
         if (cursor.getCount() > 0)
@@ -179,7 +187,7 @@ public class DbHelper extends SQLiteOpenHelper {
     long addClass(long uid, String className, String subjectName) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(U_ID,uid);
+        values.put(U_ID, uid);
         values.put(CLASS_NAME_KEY, className);
         values.put(SUBJECT_NAME_KEY, subjectName);
 
@@ -188,7 +196,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     Cursor getClassTable(long uid) {
         SQLiteDatabase database = this.getReadableDatabase();
-        return database.query(CLASS_TABLE_NAME,null,U_ID + "=?", new String[]{String.valueOf(uid)},null,null,null);
+        return database.query(CLASS_TABLE_NAME, null, U_ID + "=?", new String[]{String.valueOf(uid)}, null, null, null);
         //return database.rawQuery(SELECT_CLASS_TABLE, null);
     }
 
@@ -218,7 +226,6 @@ public class DbHelper extends SQLiteOpenHelper {
 
     Cursor getStudentTable(long cid) {
         SQLiteDatabase database = this.getReadableDatabase();
-
         return database.query(STUDENT_TABLE_NAME, null, C_ID + "=?", new String[]{String.valueOf(cid)}, null, null, STUDENT_ROLL_KEY);
     }
 

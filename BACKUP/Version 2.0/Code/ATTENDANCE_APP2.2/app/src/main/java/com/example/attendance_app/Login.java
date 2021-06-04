@@ -1,6 +1,7 @@
 package com.example.attendance_app;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,7 @@ public class Login extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.btnsignin1);
         DB = new DbHelper(this);
         resignter.setOnClickListener(v -> {
-            Intent intent  = new Intent(getApplicationContext(), Register.class);
+            Intent intent = new Intent(getApplicationContext(), Register.class);
 
             startActivity(intent);
         });
@@ -40,20 +41,20 @@ public class Login extends AppCompatActivity {
                 String user = username.getText().toString();
                 String pass = password.getText().toString();
 
-                if(user.equals("")||pass.equals(""))
+
+                if (user.equals("") || pass.equals("")) {
                     Toast.makeText(Login.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
-                else{
+                    return;
+                } else {
                     Boolean checkuserpass = DB.checkUserNamePassword(user, pass);
-                    if(checkuserpass==true){
-                        int uid = DB.getUser(user,pass);
+                    if (checkuserpass == true) {
+                        int userId = DB.getUser(user);
                         Toast.makeText(Login.this, "Login successfully!", Toast.LENGTH_SHORT).show();
-                        Intent intent  = new Intent(getApplicationContext(), MainActivity.class);
-
-                        intent.putExtra("uid", uid);
-
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("uid", userId);
                         startActivity(intent);
-                    }else{
-                        Toast.makeText(Login.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Login.this, "Wrong username or password", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

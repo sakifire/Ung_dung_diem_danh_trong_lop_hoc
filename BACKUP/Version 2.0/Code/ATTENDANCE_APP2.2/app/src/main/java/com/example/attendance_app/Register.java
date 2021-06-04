@@ -33,8 +33,6 @@ public class Register extends AppCompatActivity {
         female = findViewById(R.id.radioButton_female);
 
 
-
-
         DB = new DbHelper(this);
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,16 +50,16 @@ public class Register extends AppCompatActivity {
 
                 if (user.equals("")) {
                     Toast.makeText(Register.this, "Please enter user name", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 if (pass.equals("")) {
                     Toast.makeText(Register.this, "Please enter user pass", Toast.LENGTH_SHORT).show();
-
+                    return;
                 }
-                if(repass.equals("")) {
+                if (repass.equals("")) {
                     Toast.makeText(Register.this, "Please enter user repass", Toast.LENGTH_SHORT).show();
-
-                }else
-                 {
+                    return;
+                } else {
                     if (pass.equals(repass)) {
                         Boolean checkuser = DB.checkUserName(user);
                         if (checkuser == false) {

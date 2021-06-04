@@ -2,6 +2,9 @@ package com.example.attendance_app;
 
 public class ClassItem {
     private long cid;
+    private String className;
+    private String subjectName;
+
 
     public ClassItem(long cid, String className, String subjectName) {
         this.cid = cid;
@@ -9,8 +12,6 @@ public class ClassItem {
         this.subjectName = subjectName;
     }
 
-    private String className;
-    private String subjectName;
 
     public String getClassName() {
         return className;
@@ -25,12 +26,6 @@ public class ClassItem {
     }
 
     public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
-
-    public ClassItem (String className, String subjectName)
-    {
-        this.className = className;
         this.subjectName = subjectName;
     }
 

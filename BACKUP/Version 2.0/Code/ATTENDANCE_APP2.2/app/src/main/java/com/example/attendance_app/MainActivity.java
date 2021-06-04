@@ -1,5 +1,6 @@
 package com.example.attendance_app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<ClassItem> classItems = new ArrayList<>();
     Toolbar toolbar;
     DbHelper dbHelper;
-
     private long uid;
 
     @Override
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DbHelper(this);
         Intent intent = getIntent();
-        uid = intent.getLongExtra("uid",-1);
+        uid = intent.getIntExtra("uid", -1);
+        Toast.makeText(this,""+uid,Toast.LENGTH_SHORT).show();
+
 
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(v -> showDialog());
@@ -62,10 +65,11 @@ public class MainActivity extends AppCompatActivity {
         classItems.clear();
         while (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(dbHelper.C_ID));
+            //int uid = cursor.getInt(cursor.getColumnIndex(dbHelper.U_ID));
             String className = cursor.getString(cursor.getColumnIndex(dbHelper.CLASS_NAME_KEY));
             String subjectName = cursor.getString(cursor.getColumnIndex(dbHelper.SUBJECT_NAME_KEY));
 
-            classItems.add(new ClassItem(id,className,subjectName));
+            classItems.add(new ClassItem(id, className, subjectName));
         }
     }
 
@@ -80,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
         title.setText("Attendance App");
         subtitle.setVisibility(View.GONE);
-        //back.setVisibility(View.INVISIBLE);
         save.setVisibility(View.INVISIBLE);
     }
 
@@ -102,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addClass(String className, String subjectName) {
-        long cid = dbHelper.addClass(uid, className,subjectName);
+
+        long cid = dbHelper.addClass(uid, className, subjectName);
         ClassItem classItem = new ClassItem(cid, className, subjectName);
         classItems.add(classItem);
         classAdapter.notifyDataSetChanged();
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case 0:
                 showUpdateDialog(item.getGroupId());
                 break;
@@ -123,13 +127,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showUpdateDialog(int position) {
         MyDialog dialog = new MyDialog();
-        dialog.show(getSupportFragmentManager(),MyDialog.CLASS_UPDATE_DIALOG);
-        dialog.setListener((className, subjectName) ->updateClass(position, className, subjectName));
+        dialog.show(getSupportFragmentManager(), MyDialog.CLASS_UPDATE_DIALOG);
+        dialog.setListener((className, subjectName) -> updateClass(position, className, subjectName));
 
     }
 
     private void updateClass(int position, String className, String subjectName) {
-        dbHelper.updateClass(classItems.get(position).getCid(),className,subjectName);
+        dbHelper.updateClass(classItems.get(position).getCid(), className, subjectName);
         classItems.get(position).setClassName(className);
         classItems.get(position).setSubjectName(subjectName);
         classAdapter.notifyItemChanged(position);

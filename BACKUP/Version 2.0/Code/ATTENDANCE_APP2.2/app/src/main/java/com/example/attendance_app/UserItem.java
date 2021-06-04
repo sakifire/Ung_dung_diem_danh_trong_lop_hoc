@@ -41,4 +41,6 @@ public class UserItem {
         this.userName = userName;
         this.passWord = passWord;
     }
+
+    public UserItem(){}
 }
