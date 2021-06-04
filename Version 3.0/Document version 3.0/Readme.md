@@ -12,3 +12,4 @@ Các chức năng hoàn thành:
     Student(Thêm mới, sửa, xóa, thêm vào lớp, thay đổi trạng thái)
     ChangeStatus(Chỉnh sửa status của học sinh trong lớp: đi học - vắng, chỉnh sửa theo ngày, theo lớp, theo môn học, lưu trạng thái.)
     ViewAttentdanceSheet(lưu thông tin điểm danh thành dạng bảng, sắp xếp theo tháng, theo môn học,..)
+Link clip demo cho version 3.0: https://youtu.be/cZu-EvQLZKw
