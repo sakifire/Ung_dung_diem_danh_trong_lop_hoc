@@ -10,21 +10,23 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DbHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     //User table
     private static final String USER_TABLE_NAME = "USER_TABLE_NAME";
     public static final String U_ID = "_UID";
     public static final String USER_NAME = "USER_NAME";
     public static final String PASSWORD = "PASSWORD";
-   // public static final String EMAIL = "EMAIL";
+    public static final String EMAIL = "EMAIL";
+    public static final String GENDER = "GENDER";
 
     private static final String CREATE_USER_TABLE =
             "CREATE TABLE " + USER_TABLE_NAME + "("
                     + U_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
                     + USER_NAME + " TEXT NOT NULL, "
                     + PASSWORD + " TEXT NOT NULL, "
-                    //+ EMAIL + " TEXT NOT NULL, "
+                    + EMAIL + " TEXT NOT NULL, "
+                    + GENDER + " TEXT NOT NULL, "
                     + " UNIQUE (" + U_ID + "," + USER_NAME + ")" + ");";
 
     private static final String DROP_USER_TABLE = "DROP TABLE IF EXISTS " + USER_TABLE_NAME;
@@ -120,22 +122,26 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     //User
-    public Boolean insertData(String username, String password) {
+    public Boolean insertData(String username, String password, String email, String gender) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("username", username);
         contentValues.put("password", password);
+        contentValues.put("email", email);
+        contentValues.put("gender",gender);
         long result = MyDB.insert("users", null, contentValues);
         if (result == -1) return false;
         else
             return true;
     }
 
-    Boolean addUser(String username, String password) {
+    Boolean addUser(String username, String password, String email, String gender) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(USER_NAME, username);
         values.put(PASSWORD, password);
+        values.put(EMAIL, email);
+        values.put(GENDER, gender);
         long result = database.insert(USER_TABLE_NAME, null, values);
         if (result == -1) return false;
         else

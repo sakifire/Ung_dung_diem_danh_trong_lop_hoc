@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Login extends AppCompatActivity {
     EditText username, password;
+    TextView resignter;
     Button btnLogin;
     DbHelper DB;
     UserItem userItem;
@@ -22,8 +24,14 @@ public class Login extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.username1);
         password = (EditText) findViewById(R.id.password1);
+        resignter = findViewById(R.id.resignter);
         btnLogin = (Button) findViewById(R.id.btnsignin1);
         DB = new DbHelper(this);
+        resignter.setOnClickListener(v -> {
+            Intent intent  = new Intent(getApplicationContext(), Register.class);
+
+            startActivity(intent);
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
