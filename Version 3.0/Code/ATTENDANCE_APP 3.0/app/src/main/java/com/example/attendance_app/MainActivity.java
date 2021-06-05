@@ -21,7 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    FloatingActionButton fab;
+    FloatingActionButton fab, edit_user;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     ClassAdapter classAdapter;
@@ -39,8 +39,21 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         uid = intent.getIntExtra("uid", -1);
 
+        String newUID = Integer.toString(intent.getIntExtra("uid", -1));
+
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(v -> showDialog());
+
+        edit_user = findViewById(R.id.fab_edit_user);
+        edit_user.setOnClickListener(v -> {
+            Intent intent1 = new Intent(this, EditActivity.class);
+            intent1.putExtra("uid1", newUID);
+            intent1.putExtra("username",intent.getStringExtra("username"));
+            intent1.putExtra("pass", intent.getStringExtra("pass"));
+            intent1.putExtra("email",intent.getStringExtra("email"));
+            intent1.putExtra("gender",intent.getStringExtra("gender"));
+            startActivity(intent1);
+        });
 
         setToolbar();
         loadData();
@@ -56,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         setToolbar();
     }
+
+
 
     private void loadData() {
         Cursor cursor = dbHelper.getClassTable(uid);

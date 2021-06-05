@@ -49,9 +49,16 @@ public class Login extends AppCompatActivity {
                     Boolean checkuserpass = DB.checkUserNamePassword(user, pass);
                     if (checkuserpass == true) {
                         int userId = DB.getUser(user);
+                        String email = DB.getEmail(user);
+                        String gender = DB.getGender(user);
                         Toast.makeText(Login.this, "Login successfully!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("uid", userId);
+                        intent.putExtra("username",user);
+                        intent.putExtra("pass", pass);
+                        intent.putExtra("email", email);
+                        intent.putExtra("gender", gender);
+
                         startActivity(intent);
                     } else {
                         Toast.makeText(Login.this, "Wrong username or password", Toast.LENGTH_SHORT).show();

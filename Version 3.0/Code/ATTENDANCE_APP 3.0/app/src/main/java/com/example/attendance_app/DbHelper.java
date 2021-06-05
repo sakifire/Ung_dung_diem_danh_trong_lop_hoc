@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static final int VERSION = 4;
+    private Context context;
 
     //User table
     private static final String USER_TABLE_NAME = "USER_TABLE_NAME";
@@ -110,6 +111,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CLASS_TABLE);
         db.execSQL(CREATE_STUDENT_TABLE);
         db.execSQL(CREATE_STATUS_TABLE);
+
     }
 
     @Override
@@ -119,7 +121,6 @@ public class DbHelper extends SQLiteOpenHelper {
             db.execSQL(DROP_CLASS_TABLE);
             db.execSQL(DROP_STUDENT_TABLE);
             db.execSQL(DROP_STATUS_TABLE);
-            db.execSQL(CREATE_USER_TABLE);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -161,11 +162,28 @@ public class DbHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
         return cursor.getInt(0);
     }
-
-    public UserItem getUserById(String id) {
+    public String getEmail(String username) {
         SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + U_ID +
-                " = ? ", new String[]{id});
+        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
+                " = ? ", new String[]{username});
+        if (cursor.getCount() > 0)
+            cursor.moveToFirst();
+        return cursor.getString(3);
+    }
+
+    public String getGender(String username) {
+        SQLiteDatabase MyDB = this.getReadableDatabase();
+        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
+                " = ? ", new String[]{username});
+        if (cursor.getCount() > 0)
+            cursor.moveToFirst();
+        return cursor.getString(4);
+    }
+
+    public UserItem getUserById(String username) {
+        SQLiteDatabase MyDB = this.getReadableDatabase();
+        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
+                " = ? ", new String[]{username});
         if (cursor.getCount() > 0)
             cursor.moveToFirst();
 
@@ -193,7 +211,7 @@ public class DbHelper extends SQLiteOpenHelper {
             return false;
     }
 
-    long updateUser(long uid, String userName, String pass, String email, String gender) {
+    long updateUser(String uid, String userName, String pass, String email, String gender) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(USER_NAME, userName);
