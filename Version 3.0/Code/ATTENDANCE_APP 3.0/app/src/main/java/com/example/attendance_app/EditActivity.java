@@ -28,9 +28,9 @@ public class EditActivity extends AppCompatActivity {
         email = findViewById(R.id.edt_email);
         save = findViewById(R.id.btnsave);
         back = findViewById(R.id.btnback);
-        gender = findViewById(R.id.edt_radio_gender);
-        male = findViewById(R.id.radioButton_male);
-        female = findViewById(R.id.radioButton_female);
+        //gender = findViewById(R.id.edt_radio_gender);
+        //male = findViewById(R.id.radioButton_male);
+        //female = findViewById(R.id.radioButton_female);
 
         Intent intent = getIntent();
         username.setText(intent.getStringExtra("username"));
@@ -64,12 +64,10 @@ public class EditActivity extends AppCompatActivity {
                 if (pass.equals(repass)) {
                     if (user.equals(intent.getStringExtra("username"))) {
                         DB.updateUser(uid, user, pass, mail, gen);
-                        Toast.makeText(EditActivity.this, "Update success1", Toast.LENGTH_SHORT).show();
                     } else {
                         Boolean checkUser = DB.checkUserName(user);
                         if (checkUser == false) {
                             DB.updateUser(uid, user, pass, mail, gen);
-                            Toast.makeText(EditActivity.this, "Update success2", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(EditActivity.this, "Username already exists!", Toast.LENGTH_SHORT).show();
                         }
