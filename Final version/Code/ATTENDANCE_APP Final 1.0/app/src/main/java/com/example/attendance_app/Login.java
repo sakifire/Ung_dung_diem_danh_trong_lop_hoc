@@ -1,7 +1,6 @@
 package com.example.attendance_app;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,11 +10,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.attendance_app.Controller.UserController;
+import com.example.attendance_app.Model.UserItem;
+
 public class Login extends AppCompatActivity {
     EditText username, password;
     TextView resignter;
     Button btnLogin;
-    DbHelper DB;
+    UserController userController;
     UserItem userItem;
 
     @Override
@@ -27,7 +29,7 @@ public class Login extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password1);
         resignter = findViewById(R.id.resignter);
         btnLogin = (Button) findViewById(R.id.btnsignin1);
-        DB = new DbHelper(this);
+        userController = new UserController(this);
         resignter.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Register.class);
 
@@ -46,11 +48,11 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-                    Boolean checkuserpass = DB.checkUserNamePassword(user, pass);
+                    Boolean checkuserpass = userController.checkUserNamePassword(user, pass);
                     if (checkuserpass == true) {
-                        int userId = DB.getUser(user);
-                        String email = DB.getEmail(user);
-                        String gender = DB.getGender(user);
+                        int userId = userController.getUser(user);
+                        String email = userController.getEmail(user);
+                        String gender = userController.getGender(user);
                         Toast.makeText(Login.this, "Login successfully!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), Home.class);
                         intent.putExtra("uid", userId);

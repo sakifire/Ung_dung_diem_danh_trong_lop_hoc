@@ -1,17 +1,24 @@
 package com.example.attendance_app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.attendance_app.Adapter.SheetListActivity;
+import com.example.attendance_app.Adapter.StudentAdapter;
+import com.example.attendance_app.Controller.StudentController;
+import com.example.attendance_app.Model.StudentItem;
 
 import java.util.ArrayList;
 
@@ -25,20 +32,20 @@ public class StudentActivity extends AppCompatActivity {
     private StudentAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<StudentItem> studentItems = new ArrayList<>();
-    private DbHelper dbHelper;
+    private StudentController studentController;
     private long cid;
 
     private MyCalendar calendar;
     private TextView subtitle;
 
-
+    Context context ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
         calendar = new MyCalendar();
-        dbHelper = new DbHelper(this);
+        studentController = new StudentController(this);
         Intent intent = getIntent();
         className = intent.getStringExtra("className");
         subjectName = intent.getStringExtra("subjectName");
@@ -60,7 +67,7 @@ public class StudentActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        Cursor cursor = dbHelper.getStudentTable(cid);
+        Cursor cursor = studentController.getStudentTable(cid);
 
         studentItems.clear();
         while (cursor.moveToNext()) {
@@ -102,16 +109,17 @@ public class StudentActivity extends AppCompatActivity {
         for(StudentItem studentItem : studentItems){
             String status = studentItem.getStatus();
             if(status != "P") status = "A";
-            long value = dbHelper.addStatus(studentItem.getSid(),cid,calendar.getDate(),status);
+            long value = studentController.addStatus(studentItem.getSid(),cid,calendar.getDate(),status);
 
             if(value == -1)
-                dbHelper.updateStatus(studentItem.getSid(),calendar.getDate(),status);
+                studentController.updateStatus(studentItem.getSid(),calendar.getDate(),status);
         }
+        Toast.makeText(StudentActivity.this, "Save success", Toast.LENGTH_SHORT).show();
     }
 
     private void  loadStatusData(){
         for(StudentItem studentItem : studentItems){
-            String status = dbHelper.getStatus(studentItem.getSid(),calendar.getDate());
+            String status = studentController.getStatus(studentItem.getSid(),calendar.getDate());
             if(status!=null) studentItem.setStatus(status);
             else studentItem.setStatus("");
 
@@ -170,7 +178,7 @@ public class StudentActivity extends AppCompatActivity {
 
     private void addStudent(String roll_string, String name) {
         int roll = Integer.parseInt(roll_string);
-        long sid = dbHelper.addStudent(cid, roll, name);
+        long sid = studentController.addStudent(cid, roll, name);
         StudentItem studentItem = new StudentItem(sid, roll, name);
         studentItems.add(studentItem);
         adapter.notifyDataSetChanged();
@@ -195,13 +203,13 @@ public class StudentActivity extends AppCompatActivity {
     }
 
     private void updateStudent(int position, String name) {
-        dbHelper.updateStudent(studentItems.get(position).getSid(), name);
+        studentController.updateStudent(studentItems.get(position).getSid(), name);
         studentItems.get(position).setName(name);
         adapter.notifyItemChanged(position);
     }
 
     private void deleteStudent(int position) {
-        dbHelper.deleteStudent(studentItems.get(position).getSid());
+        studentController.deleteStudent(studentItems.get(position).getSid());
         studentItems.remove(position);
         adapter.notifyItemRemoved(position);
     }

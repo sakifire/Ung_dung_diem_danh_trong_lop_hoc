@@ -15,6 +15,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.attendance_app.Adapter.ClassAdapter;
+import com.example.attendance_app.Controller.ClassController;
+import com.example.attendance_app.Model.ClassItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ public class ClassActivity extends AppCompatActivity {
     ClassAdapter classAdapter;
     ArrayList<ClassItem> classItems = new ArrayList<>();
     Toolbar toolbar;
-    DbHelper dbHelper;
+    ClassController classController;
     private long uid;
 
     @Override
@@ -34,10 +37,9 @@ public class ClassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
 
-        dbHelper = new DbHelper(this);
+        classController = new ClassController(this);
         Intent intent = getIntent();
         uid = intent.getIntExtra("uid_forClass", -1);
-        Toast.makeText(ClassActivity.this,""+uid,Toast.LENGTH_SHORT).show();
 
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(v -> showDialog());
@@ -57,18 +59,28 @@ public class ClassActivity extends AppCompatActivity {
 
         setToolbar();
     }
-
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                showUpdateDialog(item.getGroupId());
+                break;
+            case 1:
+                deleteClass(item.getGroupId());
+        }
+        return super.onContextItemSelected(item);
+    }
 
 
     private void loadData() {
-        Cursor cursor = dbHelper.getClassTable(uid);
+        Cursor cursor = classController.getClassTable(uid);
 
         classItems.clear();
         while (cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndex(dbHelper.C_ID));
+            int id = cursor.getInt(cursor.getColumnIndex(classController.getDbHelper().C_ID));
             //int uid = cursor.getInt(cursor.getColumnIndex(dbHelper.U_ID));
-            String className = cursor.getString(cursor.getColumnIndex(dbHelper.CLASS_NAME_KEY));
-            String subjectName = cursor.getString(cursor.getColumnIndex(dbHelper.SUBJECT_NAME_KEY));
+            String className = cursor.getString(cursor.getColumnIndex(classController.getDbHelper().CLASS_NAME_KEY));
+            String subjectName = cursor.getString(cursor.getColumnIndex(classController.getDbHelper().SUBJECT_NAME_KEY));
 
             classItems.add(new ClassItem(id, className, subjectName));
         }
@@ -106,24 +118,15 @@ public class ClassActivity extends AppCompatActivity {
     }
 
     private void addClass(String className, String subjectName) {
-
-        long cid = dbHelper.addClass(uid, className, subjectName);
+        if(classController.checkClassName(className)){
+            Toast.makeText(ClassActivity.this,"This class has already exist", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        long cid = classController.addClass(uid, className, subjectName);
         ClassItem classItem = new ClassItem(cid, className, subjectName);
         classItems.add(classItem);
         classAdapter.notifyDataSetChanged();
 
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case 0:
-                showUpdateDialog(item.getGroupId());
-                break;
-            case 1:
-                deleteClass(item.getGroupId());
-        }
-        return super.onContextItemSelected(item);
     }
 
     private void showUpdateDialog(int position) {
@@ -134,7 +137,7 @@ public class ClassActivity extends AppCompatActivity {
     }
 
     private void updateClass(int position, String className, String subjectName) {
-        dbHelper.updateClass(classItems.get(position).getCid(), className, subjectName);
+        classController.updateClass(classItems.get(position).getCid(), className, subjectName);
         classItems.get(position).setClassName(className);
         classItems.get(position).setSubjectName(subjectName);
         classAdapter.notifyItemChanged(position);
@@ -142,7 +145,7 @@ public class ClassActivity extends AppCompatActivity {
     }
 
     private void deleteClass(int position) {
-        dbHelper.deleteClass(classItems.get(position).getCid());
+        classController.deleteClass(classItems.get(position).getCid());
         classItems.remove(position);
         classAdapter.notifyItemRemoved(position);
     }

@@ -15,7 +15,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private Context context;
 
     //User table
-    private static final String USER_TABLE_NAME = "USER_TABLE_NAME";
+    public static final String USER_TABLE_NAME = "USER_TABLE_NAME";
     public static final String U_ID = "_UID";
     public static final String USER_NAME = "USER_NAME";
     public static final String PASSWORD = "PASSWORD";
@@ -36,7 +36,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     //CLass table
-    private static final String CLASS_TABLE_NAME = "CLASS_TABLE";
+    public static final String CLASS_TABLE_NAME = "CLASS_TABLE";
     public static final String C_ID = "_CID";
     public static final String CLASS_NAME_KEY = "CLASS_NAME";
     public static final String SUBJECT_NAME_KEY = "SUBJECT_NAME";
@@ -58,7 +58,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SELECT_CLASS_TABLE = "SELECT * FROM " + CLASS_TABLE_NAME;
 
     //Student table
-    private static final String STUDENT_TABLE_NAME = "STUDENT_TABLE";
+    public static final String STUDENT_TABLE_NAME = "STUDENT_TABLE";
     public static final String S_ID = "_SID";
     public static final String STUDENT_NAME_KEY = "STUDENT_NAME";
     public static final String STUDENT_ROLL_KEY = "ROLL";
@@ -79,7 +79,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SELECT_STUDENT_TABLE = "SELECT * FROM " + STUDENT_TABLE_NAME;
 
     //Status table
-    private static final String STATUS_TABLE_NAME = "STATUS_TABLE";
+    public static final String STATUS_TABLE_NAME = "STATUS_TABLE";
     public static final String STATUS_ID = "_STATUS_ID";
     public static final String DATE_KEY = "STATUS_DATE";
     public static final String STATUS_KEY = "STATUS";
@@ -125,200 +125,4 @@ public class DbHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
-
-    //User
-    public Boolean insertData(String username, String password, String email, String gender) {
-        SQLiteDatabase MyDB = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("username", username);
-        contentValues.put("password", password);
-        contentValues.put("email", email);
-        contentValues.put("gender", gender);
-        long result = MyDB.insert("users", null, contentValues);
-        if (result == -1) return false;
-        else
-            return true;
-    }
-
-    Boolean addUser(String username, String password, String email, String gender) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(USER_NAME, username);
-        values.put(PASSWORD, password);
-        values.put(EMAIL, email);
-        values.put(GENDER, gender);
-        long result = database.insert(USER_TABLE_NAME, null, values);
-        if (result == -1) return false;
-        else
-            return true;
-
-    }
-
-    public int getUser(String username) {
-        SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
-                " = ? ", new String[]{username});
-        if (cursor.getCount() > 0)
-            cursor.moveToFirst();
-        return cursor.getInt(0);
-    }
-    public String getEmail(String username) {
-        SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
-                " = ? ", new String[]{username});
-        if (cursor.getCount() > 0)
-            cursor.moveToFirst();
-        return cursor.getString(3);
-    }
-
-    public String getGender(String username) {
-        SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
-                " = ? ", new String[]{username});
-        if (cursor.getCount() > 0)
-            cursor.moveToFirst();
-        return cursor.getString(4);
-    }
-
-    public UserItem getUserById(String username) {
-        SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
-                " = ? ", new String[]{username});
-        if (cursor.getCount() > 0)
-            cursor.moveToFirst();
-
-        return new UserItem(cursor.getInt(0), cursor.getString(1),
-                cursor.getString(2),cursor.getString(3),
-                cursor.getString(4));
-    }
-
-    public Boolean checkUserName(String username) {
-        SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME + " = ? ", new String[]{username});
-        if (cursor.getCount() > 0)
-            return true;
-        else
-            return false;
-    }
-
-    public Boolean checkUserNamePassword(String username, String password) {
-        SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("SELECT * FROM " + USER_TABLE_NAME + " WHERE " + USER_NAME +
-                " = ? AND " + PASSWORD + " = ?", new String[]{username, password});
-        if (cursor.getCount() > 0)
-            return true;
-        else
-            return false;
-    }
-
-    long updateUser(String uid, String userName, String pass, String email, String gender) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(USER_NAME, userName);
-        values.put(PASSWORD, pass);
-        values.put(EMAIL, email);
-        values.put(GENDER, gender);
-
-        return database.update(USER_TABLE_NAME, values, U_ID + "=?", new String[]{String.valueOf(uid)});
-    }
-
-    //Class
-    long addClass(long uid, String className, String subjectName) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(U_ID, uid);
-        values.put(CLASS_NAME_KEY, className);
-        values.put(SUBJECT_NAME_KEY, subjectName);
-
-        return database.insert(CLASS_TABLE_NAME, null, values);
-    }
-
-    Cursor getClassTable(long uid) {
-        SQLiteDatabase database = this.getReadableDatabase();
-        return database.query(CLASS_TABLE_NAME, null, U_ID + "=?", new String[]{String.valueOf(uid)}, null, null, null);
-        //return database.rawQuery(SELECT_CLASS_TABLE, null);
-    }
-
-    int deleteClass(long cid) {
-        SQLiteDatabase database = this.getReadableDatabase();
-        return database.delete(CLASS_TABLE_NAME, C_ID + "=?", new String[]{String.valueOf(cid)});
-    }
-
-    long updateClass(long cid, String className, String subjectName) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(CLASS_NAME_KEY, className);
-        values.put(SUBJECT_NAME_KEY, subjectName);
-
-        return database.update(CLASS_TABLE_NAME, values, C_ID + "=?", new String[]{String.valueOf(cid)});
-    }
-
-    //Student
-    long addStudent(long cid, int roll, String name) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(C_ID, cid);
-        values.put(STUDENT_ROLL_KEY, roll);
-        values.put(STUDENT_NAME_KEY, name);
-        return database.insert(STUDENT_TABLE_NAME, null, values);
-    }
-
-    Cursor getStudentTable(long cid) {
-        SQLiteDatabase database = this.getReadableDatabase();
-        return database.query(STUDENT_TABLE_NAME, null, C_ID + "=?", new String[]{String.valueOf(cid)}, null, null, STUDENT_ROLL_KEY);
-    }
-
-    int deleteStudent(long sid) {
-        SQLiteDatabase database = this.getReadableDatabase();
-        return database.delete(STUDENT_TABLE_NAME, S_ID + "=?", new String[]{String.valueOf(sid)});
-    }
-
-    long updateStudent(long sid, String name) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(STUDENT_NAME_KEY, name);
-        return database.update(STUDENT_TABLE_NAME, values, S_ID + "=?", new String[]{String.valueOf(sid)});
-    }
-
-    //Status
-    long addStatus(long sid, long cid, String date, String status) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(S_ID, sid);
-        values.put(C_ID, cid);
-        values.put(DATE_KEY, date);
-        values.put(STATUS_KEY, status);
-
-        return database.insert(STATUS_TABLE_NAME, null, values);
-
-    }
-
-    long updateStatus(long sid, String date, String status) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(STATUS_KEY, status);
-        String whereClause = DATE_KEY + "='" + date + "' AND " + S_ID + "=" + sid;
-
-        return database.update(STATUS_TABLE_NAME, values, whereClause, null);
-
-    }
-
-    String getStatus(long sid, String date) {
-        String status = null;
-        SQLiteDatabase database = this.getReadableDatabase();
-        String whereClause = DATE_KEY + "='" + date + "' AND " + S_ID + "=" + sid;
-        Cursor cursor = database.query(STATUS_TABLE_NAME, null, whereClause, null, null, null, null);
-        if (cursor.moveToFirst())
-            status = cursor.getString(cursor.getColumnIndex(STATUS_KEY));
-        return status;
-
-    }
-
-    Cursor getDistinctMonth(long cid) {
-        SQLiteDatabase database = this.getReadableDatabase();
-        return database.query(STATUS_TABLE_NAME, new String[]{DATE_KEY},
-                C_ID + "=" + cid, null, "substr(" + DATE_KEY + ",4,7)", null, null);//01.04.2020
-    }
-
-
 }

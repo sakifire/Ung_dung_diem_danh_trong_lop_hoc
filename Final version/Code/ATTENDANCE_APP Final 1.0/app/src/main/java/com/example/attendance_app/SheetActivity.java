@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.attendance_app.Controller.StudentController;
+
 import java.util.Calendar;
 
 public class SheetActivity extends AppCompatActivity {
@@ -32,7 +34,7 @@ public class SheetActivity extends AppCompatActivity {
     }
 
     private void showTable() {
-        DbHelper dbHelper = new DbHelper(this);
+        StudentController studentController = new StudentController(this);
         TableLayout tableLayout = findViewById(R.id.tableLayout);
         long[] idArray = getIntent().getLongArrayExtra("idArray");
         int[] rollArray = getIntent().getIntArrayExtra("rollArray");
@@ -56,7 +58,7 @@ public class SheetActivity extends AppCompatActivity {
         }
 
         //Header
-        roll_tvs[0].setText("Roll");
+        roll_tvs[0].setText("MSSV");
         roll_tvs[0].setTypeface(roll_tvs[0].getTypeface(), Typeface.BOLD);
         name_tvs[0].setText("Name");
         name_tvs[0].setTypeface(name_tvs[0].getTypeface(), Typeface.BOLD);
@@ -73,7 +75,7 @@ public class SheetActivity extends AppCompatActivity {
                 String day = String.valueOf(j);
                 if (day.length() == 1) day = "0" + day;
                 String date = day + "." + month;
-                String status = dbHelper.getStatus(idArray[i - 1], date);
+                String status = studentController.getStatus(idArray[i - 1], date);
                 status_tvs[i][j].setText(status);
             }
         }

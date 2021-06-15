@@ -11,12 +11,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.attendance_app.Controller.UserController;
+
 public class Register extends AppCompatActivity {
     EditText username, password, repassword, email;
     Button signup, signin;
     RadioButton male, female;
     RadioGroup gender;
-    DbHelper DB;
+    UserController userController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,7 @@ public class Register extends AppCompatActivity {
         female = findViewById(R.id.radioButton_female);
 
 
-        DB = new DbHelper(this);
+        userController = new UserController(this);
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,9 +63,9 @@ public class Register extends AppCompatActivity {
                     return;
                 } else {
                     if (pass.equals(repass)) {
-                        Boolean checkuser = DB.checkUserName(user);
+                        Boolean checkuser = userController.checkUserName(user);
                         if (checkuser == false) {
-                            Boolean insert = DB.addUser(user, pass, mail, finalGen);
+                            Boolean insert = userController.addUser(user, pass, mail, finalGen);
                             if (insert == true) {
                                 Toast.makeText(Register.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), Login.class);

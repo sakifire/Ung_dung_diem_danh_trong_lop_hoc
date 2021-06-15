@@ -70,7 +70,7 @@ public class MyDialog extends DialogFragment {
         EditText roll_edt = view.findViewById(R.id.edt01);
         EditText name_edt = view.findViewById(R.id.edt02);
 
-        roll_edt.setHint("Roll");
+        roll_edt.setHint("MSSV");
         name_edt.setHint("Name");
 
         Button cancel = view.findViewById(R.id.cancel_btn);
@@ -140,7 +140,7 @@ public class MyDialog extends DialogFragment {
         EditText roll_edt = view.findViewById(R.id.edt01);
         EditText name_edt = view.findViewById(R.id.edt02);
 
-        roll_edt.setHint("Roll");
+        roll_edt.setHint("MSSV");
         name_edt.setHint("Name");
 
         Button cancel = view.findViewById(R.id.cancel_btn);
